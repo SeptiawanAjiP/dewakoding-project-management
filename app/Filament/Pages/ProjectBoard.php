@@ -37,13 +37,17 @@ class ProjectBoard extends Page
 
     public function mount(): void
     {
+        $projectId = request()->query('project_id');
+
         if (auth()->user()->hasRole(['super_admin', 'admin'])) {
             $this->projects = Project::all();
         } else {
             $this->projects = auth()->user()->projects;
         }
 
-        if ($this->projects->isNotEmpty()) {
+        if ($projectId && $this->projects->contains('id', $projectId)) {
+            $this->selectProject($projectId);
+        } elseif ($this->projects->isNotEmpty()) {
             $this->selectProject($this->projects->first()->id);
         }
     }

@@ -106,8 +106,11 @@
                                 </div>
                             @endif
 
-                            <a href="{{ route('filament.admin.resources.tickets.create', ['project_id' => $selectedProject, 'ticket_status_id' => $status]) }}"
-                                class="flex items-center justify-center py-3 bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 text-xs font-medium rounded-lg border border-dashed border-gray-300 dark:border-gray-700">
+                            <a href="{{ route('filament.admin.resources.tickets.create', ['project_id' => $selectedProject, 'ticket_status_id' => $status, 'redirect' => url('admin/project-board') . '?project_id=' . $selectedProject->id]) }}"
+                                class="flex
+                                items-center justify-center py-3 bg-gray-100 dark:bg-gray-800 text-gray-500
+                                dark:text-gray-400 text-xs font-medium rounded-lg border border-dashed border-gray-300
+                                dark:border-gray-700">
                                 <x-heroicon-s-plus class="w-4 h-4 inline-block mr-1" />
                                 Add Ticket
                             </a>
