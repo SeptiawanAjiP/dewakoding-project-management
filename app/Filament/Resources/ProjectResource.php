@@ -25,20 +25,24 @@ class ProjectResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\Textarea::make('description')
-                    ->columnSpanFull(),
-                Forms\Components\TextInput::make('ticket_prefix')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\Toggle::make('create_default_statuses')
-                    ->label('Use Default Ticket Statuses')
-                    ->helperText('Create standard To Do, In Progress, Review, and Done statuses automatically')
-                    ->default(true)
-                    ->dehydrated(false)
-                    ->visible(fn ($livewire) => $livewire instanceof Pages\CreateProject)
+                Forms\Components\Section::make([
+                    Forms\Components\TextInput::make('name')
+                        ->required()
+                        ->maxLength(255),
+                    Forms\Components\Textarea::make('description')
+                        ->columnSpanFull(),
+                ]),
+                Forms\Components\Section::make([
+                    Forms\Components\TextInput::make('ticket_prefix')
+                        ->required()
+                        ->maxLength(255),
+                    Forms\Components\Toggle::make('create_default_statuses')
+                        ->label('Use Default Ticket Statuses')
+                        ->helperText('Create standard To Do, In Progress, Review, and Done statuses automatically')
+                        ->default(true)
+                        ->dehydrated(false)
+                        ->visible(fn($livewire) => $livewire instanceof Pages\CreateProject)
+                ])
             ]);
     }
 
@@ -96,12 +100,12 @@ class ProjectResource extends Resource
             'edit' => Pages\EditProject::route('/{record}/edit')
         ];
     }
-    
+
     // Add this method to show all projects for super_admin, but only member projects for regular users
     public static function getEloquentQuery(): Builder
     {
         $query = parent::getEloquentQuery();
-        
+
         // Check if the current user has the super_admin role
         // Adjust this condition based on how you check for roles in your application
         $userIsSuperAdmin = auth()->user() && (
@@ -110,14 +114,14 @@ class ProjectResource extends Resource
             // Or if using a simple role column
             || (isset(auth()->user()->role) && auth()->user()->role === 'super_admin')
         );
-        
+
         if (!$userIsSuperAdmin) {
             // If not a super_admin, only show projects where user is a member
             $query->whereHas('members', function (Builder $query) {
                 $query->where('user_id', auth()->id());
             });
         }
-        
+
         return $query;
     }
 }
