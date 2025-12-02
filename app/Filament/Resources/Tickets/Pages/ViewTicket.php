@@ -2,23 +2,21 @@
 
 namespace App\Filament\Resources\Tickets\Pages;
 
-use Filament\Actions\EditAction;
-use Filament\Schemas\Schema;
-use Filament\Schemas\Components\Grid;
-use Filament\Schemas\Components\Group;
-use Filament\Schemas\Components\Section;
 use App\Filament\Pages\ProjectBoard;
 use App\Filament\Resources\Tickets\TicketResource;
 use App\Models\Ticket;
 use App\Models\TicketComment;
-use Filament\Actions;
 use Filament\Actions\Action;
-use Filament\Forms;
+use Filament\Actions\EditAction;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\RichEditor;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
+use Illuminate\Support\HtmlString;
 
 class ViewTicket extends ViewRecord
 {
@@ -42,7 +40,7 @@ class ViewTicket extends ViewRecord
             ->fillForm(function (array $arguments): array {
                 $comment = TicketComment::find($arguments['commentId']);
 
-                if (!$comment) {
+                if (! $comment) {
                     return [];
                 }
 
@@ -54,19 +52,21 @@ class ViewTicket extends ViewRecord
             ->action(function (array $data): void {
                 $comment = TicketComment::find($data['comment_id']);
 
-                if (!$comment) {
+                if (! $comment) {
                     Notification::make()
                         ->title('Comment not found')
                         ->danger()
                         ->send();
+
                     return;
                 }
 
-                if ($comment->user_id !== auth()->id() && !auth()->user()->hasRole(['super_admin'])) {
+                if ($comment->user_id !== auth()->id() && ! auth()->user()->hasRole(['super_admin'])) {
                     Notification::make()
                         ->title('You do not have permission to edit this comment')
                         ->danger()
                         ->send();
+
                     return;
                 }
 
@@ -98,19 +98,21 @@ class ViewTicket extends ViewRecord
             ->action(function (array $arguments): void {
                 $comment = TicketComment::find($arguments['commentId']);
 
-                if (!$comment) {
+                if (! $comment) {
                     Notification::make()
                         ->title('Comment not found')
                         ->danger()
                         ->send();
+
                     return;
                 }
 
-                if ($comment->user_id !== auth()->id() && !auth()->user()->hasRole(['super_admin'])) {
+                if ($comment->user_id !== auth()->id() && ! auth()->user()->hasRole(['super_admin'])) {
                     Notification::make()
                         ->title('You do not have permission to delete this comment')
                         ->danger()
                         ->send();
+
                     return;
                 }
 
@@ -140,7 +142,7 @@ class ViewTicket extends ViewRecord
             Action::make('back')
                 ->label('Back to Board')
                 ->color('gray')
-                ->url(fn() => ProjectBoard::getUrl(['project_id' => $this->record->project_id])),
+                ->url(fn () => ProjectBoard::getUrl(['project_id' => $this->record->project_id])),
         ];
     }
 
@@ -176,8 +178,16 @@ class ViewTicket extends ViewRecord
                             ->schema([
                                 TextEntry::make('status.name')
                                     ->label('Status')
-                                    ->badge()
-                                    ->color(fn($record) => $record->status?->color ?? 'gray'),
+                                    ->formatStateUsing(function ($record) {
+                                        $color = e($record->status?->color ?? '#6B7280');
+                                        $name = e($record->status?->name ?? 'Unknown');
+
+                                        return new HtmlString(<<<HTML
+                                        <span class="fi-badge fi-size-sm" style="color: #fff; background-color: {$color};">
+                                            {$name}
+                                        </span>
+                                    HTML);
+                                    }),
 
                                 TextEntry::make('assignees.name')
                                     ->label('Assigned To')
@@ -195,7 +205,7 @@ class ViewTicket extends ViewRecord
                                     ->label('Due Date')
                                     ->date('d M Y')
                                     ->icon('heroicon-o-calendar')
-                                    ->color(fn($record) => $record->due_date && $record->due_date->isPast() ? 'danger' : 'success'),
+                                    ->color(fn ($record) => $record->due_date && $record->due_date->isPast() ? 'danger' : 'success'),
                             ]),
                     ]),
 

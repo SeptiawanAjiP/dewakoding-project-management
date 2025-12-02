@@ -19,7 +19,7 @@ class CreateProject extends CreateRecord
                 ['name' => 'To Do', 'color' => '#F59E0B', 'sort_order' => 1],
                 ['name' => 'In Progress', 'color' => '#3B82F6', 'sort_order' => 2],
                 ['name' => 'Review', 'color' => '#8B5CF6', 'sort_order' => 3],
-                ['name' => 'Done', 'color' => '#10B981', 'sort_order' => 4]
+                ['name' => 'Done', 'color' => '#10B981', 'sort_order' => 4, 'is_completed' => true],
             ];
 
             foreach ($defaultStatuses as $status) {
