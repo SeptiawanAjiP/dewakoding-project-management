@@ -277,10 +277,22 @@ class TicketResource extends Resource
                 SelectFilter::make('ticket_status_id')
                     ->label('Status')
                     ->options(function () {
-                        $projectId = request()->input('tableFilters.project_id');
+                        // Try to get project ID from various sources
+                        $projectId = request()->input('tableFilters.project_id.value') 
+                            ?? request()->query('filters.project_id.value')
+                            ?? request()->input('tableFilters.project_id')
+                            ?? request()->query('project_id');
                         
                         if (!$projectId) {
-                            return [];
+                            // If no project is selected, show all statuses for projects the user has access to
+                            if (auth()->user()->hasRole(['super_admin'])) {
+                                return TicketStatus::pluck('name', 'id')->toArray();
+                            }
+                            
+                            $userProjectIds = auth()->user()->projects()->pluck('projects.id')->toArray();
+                            return TicketStatus::whereIn('project_id', $userProjectIds)
+                                ->pluck('name', 'id')
+                                ->toArray();
                         }
                         
                         return TicketStatus::where('project_id', $projectId)
@@ -293,10 +305,22 @@ class TicketResource extends Resource
                 SelectFilter::make('epic_id')
                     ->label('Epic')
                     ->options(function () {
-                        $projectId = request()->input('tableFilters.project_id');
+                        // Try to get project ID from various sources
+                        $projectId = request()->input('tableFilters.project_id.value') 
+                            ?? request()->query('filters.project_id.value')
+                            ?? request()->input('tableFilters.project_id')
+                            ?? request()->query('project_id');
                         
                         if (!$projectId) {
-                            return [];
+                            // If no project is selected, show all epics for projects the user has access to
+                            if (auth()->user()->hasRole(['super_admin'])) {
+                                return Epic::pluck('name', 'id')->toArray();
+                            }
+                            
+                            $userProjectIds = auth()->user()->projects()->pluck('projects.id')->toArray();
+                            return Epic::whereIn('project_id', $userProjectIds)
+                                ->pluck('name', 'id')
+                                ->toArray();
                         }
                         
                         return Epic::where('project_id', $projectId)
