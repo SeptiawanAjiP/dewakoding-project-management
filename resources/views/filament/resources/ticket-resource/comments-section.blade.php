@@ -71,7 +71,10 @@
                                     @endif
                                 </div>
                             </div>
-                            <div class="prose prose-sm dark:prose-invert max-w-none">
+                            <div class="prose prose-sm dark:prose-invert max-w-none
+                                [&_a]:text-primary-600 [&_a]:underline [&_a]:underline-offset-2
+                                dark:[&_a]:text-primary-400
+                                [&_a:hover]:text-primary-800 dark:[&_a:hover]:text-primary-300">
                                 {!! convertVideoImgsToVideoTags($comment->comment) !!}
                             </div>
                             @if($comment->created_at != $comment->updated_at)

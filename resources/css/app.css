@@ -12,6 +12,25 @@
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
 
+/* Prose link styles - ensure links in comments are visible */
+.prose a {
+    color: var(--color-primary-600, #4f46e5);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.dark .prose a {
+    color: var(--color-primary-400, #818cf8);
+}
+
+.prose a:hover {
+    color: var(--color-primary-800, #3730a3);
+}
+
+.dark .prose a:hover {
+    color: var(--color-primary-300, #a5b4fc);
+}
+
 /* View-only mode styles */
 .view-only-mode .ticket-card {
     cursor: default !important;

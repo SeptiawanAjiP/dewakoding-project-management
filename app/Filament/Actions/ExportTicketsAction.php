@@ -2,13 +2,9 @@
 
 namespace App\Filament\Actions;
 
-use Filament\Schemas\Components\Section;
-use App\Exports\TicketsExport;
 use Filament\Actions\Action;
 use Filament\Forms\Components\CheckboxList;
-use Filament\Notifications\Notification;
-use Maatwebsite\Excel\Facades\Excel;
-use Symfony\Component\HttpFoundation\StreamedResponse;
+use Filament\Schemas\Components\Section;
 
 class ExportTicketsAction
 {
@@ -30,18 +26,19 @@ class ExportTicketsAction
                                 'description' => 'Description',
                                 'status' => 'Status',
                                 'assignee' => 'Assignee',
+                                'project_code' => 'Project Code',
                                 'project' => 'Project',
                                 'epic' => 'Epic',
                                 'due_date' => 'Due Date',
                                 'created_at' => 'Created At',
                                 'updated_at' => 'Updated At',
                             ])
-                            ->default(['uuid', 'name', 'status', 'assignee', 'due_date', 'created_at'])
+                            ->default(['uuid', 'name', 'status', 'assignee', 'project_code', 'project', 'due_date', 'created_at'])
                             ->required()
                             ->minItems(1)
                             ->columns(2)
-                            ->gridDirection('row')
-                    ])
+                            ->gridDirection('row'),
+                    ]),
             ])
             ->action(function (array $data, $livewire): void {
                 $livewire->exportTickets($data['columns'] ?? []);
