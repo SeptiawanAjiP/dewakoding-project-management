@@ -74,8 +74,22 @@ class ProjectBoard extends Page
         }
 
         if ($project_id) {
-            $this->selectedProjectId = (int) $project_id;
-            $this->selectedProject = Project::find($project_id);
+            $projectId = (int) $project_id;
+
+            if (! $this->projects->contains('id', $projectId)) {
+                Notification::make()
+                    ->title('Project Not Found')
+                    ->body('The selected project was not found or you do not have access to it.')
+                    ->danger()
+                    ->send();
+
+                $this->projectUsers = collect();
+
+                return;
+            }
+
+            $this->selectedProjectId = $projectId;
+            $this->selectedProject = Project::find($projectId);
             $this->loadProjectUsers();
         } else {
             $this->projectUsers = collect();
@@ -111,19 +125,27 @@ class ProjectBoard extends Page
 
     public function selectProject(int $projectId): void
     {
+        if (! $this->projects->contains('id', $projectId)) {
+            Notification::make()
+                ->title('Permission Denied')
+                ->body('You do not have access to this project.')
+                ->danger()
+                ->send();
+
+            return;
+        }
+
         $this->selectedTicket = null;
         $this->ticketStatuses = collect();
         $this->selectedProjectId = $projectId;
         $this->selectedProject = Project::with('tickets')->find($projectId);
         $this->selectedUserIds = [];
 
-        if ($this->selectedProject) {
-            $this->loadProjectUsers();
+        $this->loadProjectUsers();
 
-            // Use wire:navigate for SPA-like navigation
-            $url = static::getUrl(['project_id' => $projectId]);
-            $this->js("Livewire.navigate('{$url}')");
-        }
+        // Use wire:navigate for SPA-like navigation
+        $url = static::getUrl(['project_id' => $projectId]);
+        $this->js("Livewire.navigate('{$url}')");
     }
 
     #[Computed]
