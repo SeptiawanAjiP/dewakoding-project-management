@@ -2,29 +2,46 @@
 
 namespace App\Filament\Resources\TicketComments;
 
-use Filament\Schemas\Schema;
-use Filament\Forms\Components\RichEditor;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Actions\EditAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use App\Filament\Resources\TicketComments\Pages\ListTicketComments;
 use App\Filament\Resources\TicketComments\Pages\CreateTicketComment;
 use App\Filament\Resources\TicketComments\Pages\EditTicketComment;
-use App\Filament\Resources\TicketCommentResource\Pages;
+use App\Filament\Resources\TicketComments\Pages\ListTicketComments;
 use App\Models\TicketComment;
-use Filament\Forms;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Forms\Components\RichEditor;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class TicketCommentResource extends Resource
 {
     protected static ?string $model = TicketComment::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static bool $shouldRegisterNavigation = false;
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        if (! auth()->user()->hasRole(['super_admin'])) {
+            $query->whereHas('ticket', function (Builder $query) {
+                $query->whereHas('assignees', function (Builder $query) {
+                    $query->where('users.id', auth()->id());
+                })
+                    ->orWhere('created_by', auth()->id())
+                    ->orWhereHas('project.members', function (Builder $query) {
+                        $query->where('users.id', auth()->id());
+                    });
+            });
+        }
+
+        return $query;
+    }
 
     public static function form(Schema $schema): Schema
     {

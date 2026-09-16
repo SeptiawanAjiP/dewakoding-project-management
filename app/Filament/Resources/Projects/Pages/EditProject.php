@@ -2,19 +2,16 @@
 
 namespace App\Filament\Resources\Projects\Pages;
 
-use Filament\Actions\DeleteAction;
-use Filament\Actions\Action;
 use App\Filament\Resources\Projects\ProjectResource;
-use App\Models\Project;
-use Filament\Actions;
-use Filament\Resources\Pages\EditRecord;
+use Filament\Actions\Action;
+use Filament\Actions\DeleteAction;
 use Filament\Notifications\Notification;
+use Filament\Resources\Pages\EditRecord;
 use Illuminate\Support\Facades\Log;
 
 class EditProject extends EditRecord
 {
     protected static string $resource = ProjectResource::class;
-
 
     protected function getHeaderActions(): array
     {
@@ -29,13 +26,13 @@ class EditProject extends EditRecord
                 ->modalContent(function () {
                     $record = $this->record;
                     $externalAccess = $record->externalAccess;
-                
-                    if (!$externalAccess) {
+
+                    if (! $externalAccess) {
                         $externalAccess = $record->generateExternalAccess();
                     }
-                
-                    $dashboardUrl = url('/external/' . $externalAccess->access_token);
-                
+
+                    $dashboardUrl = url('/external/'.$externalAccess->access_token);
+
                     return view('filament.components.external-access-modal', [
                         'dashboardUrl' => $dashboardUrl,
                         'password' => $externalAccess->password,
@@ -57,13 +54,11 @@ class EditProject extends EditRecord
                             $record = $this->record;
                             $record->externalAccess()?->delete();
                             $newAccess = $record->generateExternalAccess();
-                            
-                            Log::info('Regenerated external access for project: ' . $record->name, [
+
+                            Log::info('Regenerated external access for project: '.$record->name, [
                                 'project_id' => $record->id,
-                                'access_token' => $newAccess->access_token,
-                                'password' => $newAccess->password
                             ]);
-                            
+
                             Notification::make()
                                 ->title('External access regenerated successfully')
                                 ->success()

@@ -2,47 +2,61 @@
 
 namespace App\Livewire;
 
-use Exception;
-use Throwable;
-use Carbon\Carbon;
-use App\Models\Ticket;
-use App\Models\Project;
-use Livewire\Component;
-use App\Models\TicketStatus;
-use Livewire\WithPagination;
-use App\Models\TicketHistory;
 use App\Models\ExternalAccess;
+use App\Models\TicketHistory;
 use App\Models\TicketPriority;
-use Livewire\Attributes\Layout;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
+use App\Models\TicketStatus;
+use Carbon\Carbon;
+use Exception;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
+use Livewire\Attributes\Layout;
+use Livewire\Component;
+use Livewire\WithPagination;
 
 #[Layout('layouts.external')]
 class ExternalDashboard extends Component
 {
     use WithPagination;
 
+    private const SESSION_LIFETIME_MINUTES = 720;
+
     public $project;
+
     public $token;
+
     public $selectedStatus = '';
+
     public $selectedPriority = null;
+
     public $searchTerm = '';
+
     public $totalTickets = 0;
+
     public $completedTickets = 0;
+
     public $progressPercentage = 0;
+
     public $statuses;
+
     public $priorities;
+
     public $activeTab = 'tasks';
 
     public $ticketsByStatus = [];
+
     public $ticketsByPriority = [];
+
     public $recentTickets = [];
+
     public $projectStats = [];
+
     public $monthlyTrend = [];
+
     public $overdueTickets = 0;
+
     public $newTicketsThisWeek = 0;
+
     public $completedThisWeek = 0;
 
     public $staticDataLoaded = false;
@@ -71,7 +85,18 @@ class ExternalDashboard extends Component
     {
         $this->token = $token;
 
-        if (!Session::get('external_authenticated_' . $token)) {
+        if (! Session::get('external_authenticated_'.$token)) {
+            return redirect()->route('external.login', $token);
+        }
+
+        $authenticatedAt = Session::get('external_authenticated_at_'.$token);
+
+        if (! $authenticatedAt || now()->timestamp - $authenticatedAt > self::SESSION_LIFETIME_MINUTES * 60) {
+            Session::forget([
+                'external_authenticated_'.$token,
+                'external_authenticated_at_'.$token,
+            ]);
+
             return redirect()->route('external.login', $token);
         }
 
@@ -79,7 +104,7 @@ class ExternalDashboard extends Component
             ->where('is_active', true)
             ->first();
 
-        if (!$externalAccess) {
+        if (! $externalAccess) {
             abort(404, 'External access not found');
         }
 
@@ -109,9 +134,9 @@ class ExternalDashboard extends Component
             })
             ->when($this->searchTerm, function ($q) {
                 $q->where(function ($query) {
-                    $query->where('name', 'like', '%' . $this->searchTerm . '%')
-                        ->orWhere('description', 'like', '%' . $this->searchTerm . '%')
-                        ->orWhere('uuid', 'like', '%' . $this->searchTerm . '%');
+                    $query->where('name', 'like', '%'.$this->searchTerm.'%')
+                        ->orWhere('description', 'like', '%'.$this->searchTerm.'%')
+                        ->orWhere('uuid', 'like', '%'.$this->searchTerm.'%');
                 });
             })
             ->orderBy('id', 'asc');
@@ -173,7 +198,7 @@ class ExternalDashboard extends Component
             ->withCount([
                 'tickets' => function ($query) {
                     $query->where('project_id', $this->project->id);
-                }
+                },
             ])
             ->orderBy('name')
             ->get()
@@ -181,7 +206,7 @@ class ExternalDashboard extends Component
                 return [
                     'status_name' => $status->name,
                     'color' => $status->color ?? '#6B7280',
-                    'count' => $status->tickets_count
+                    'count' => $status->tickets_count,
                 ];
             })
             ->toArray();
@@ -210,12 +235,12 @@ class ExternalDashboard extends Component
 
     private function truncateName($name, $length = 50): string
     {
-        return strlen($name) > $length ? substr($name, 0, $length) . '...' : $name;
+        return strlen($name) > $length ? substr($name, 0, $length).'...' : $name;
     }
 
     private function getSimpleProgress($statusName): int
     {
-        if (!$this->project || empty($statusName)) {
+        if (! $this->project || empty($statusName)) {
             return 0;
         }
 
@@ -230,7 +255,7 @@ class ExternalDashboard extends Component
 
             $currentStatus = $statuses->firstWhere('name', $statusName);
 
-            if (!$currentStatus) {
+            if (! $currentStatus) {
                 return 0;
             }
 
@@ -247,7 +272,8 @@ class ExternalDashboard extends Component
 
             return (int) round(max(0, min(100, $progress)));
         } catch (Exception $e) {
-            \Log::error('Error calculating progress: ' . $e->getMessage());
+            \Log::error('Error calculating progress: '.$e->getMessage());
+
             return 0;
         }
     }
@@ -260,16 +286,6 @@ class ExternalDashboard extends Component
             $this->dispatch('switch-to-timeline');
         }
     }
-
-
-
-
-
-
-
-
-
-
 
     private function determineWeekStatus($deviation): string
     {
@@ -288,24 +304,26 @@ class ExternalDashboard extends Component
             $ganttData = $this->ganttData;
 
             // Log export activity
-            \Log::info('Gantt chart export requested for project: ' . $this->project->id);
+            \Log::info('Gantt chart export requested for project: '.$this->project->id);
 
             // Return the gantt data for frontend processing
             return response()->json([
                 'success' => true,
                 'data' => $ganttData,
                 'project_name' => $this->project->name,
-                'export_timestamp' => now()->toISOString()
+                'export_timestamp' => now()->toISOString(),
             ]);
 
         } catch (Exception $e) {
-            \Log::error('Error exporting gantt data: ' . $e->getMessage());
+            \Log::error('Error exporting gantt data: '.$e->getMessage());
+
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to export gantt data'
+                'message' => 'Failed to export gantt data',
             ], 500);
         }
     }
+
     public function render()
     {
         return view('livewire.external-dashboard');
@@ -313,17 +331,12 @@ class ExternalDashboard extends Component
 
     public function logout()
     {
-        try {
-            if (auth()->check()) {
-                auth()->guard()->logout();
-            }
-        } catch (Throwable $e) {
-        }
-
-        Session::forget('external_authenticated_' . $this->token);
-
-        request()->session()->invalidate();
-        request()->session()->regenerateToken();
+        Session::forget([
+            'external_authenticated_'.$this->token,
+            'external_authenticated_at_'.$this->token,
+            'external_project_id',
+            'external_authenticated',
+        ]);
 
         return redirect()->route('external.login', ['token' => $this->token]);
     }

@@ -25,18 +25,19 @@ class ExternalAccess extends Model
     protected $casts = [
         'last_accessed_at' => 'datetime',
         'is_active' => 'boolean',
+        'password' => 'encrypted',
     ];
 
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);
     }
-    
+
     public static function generateForProject($projectId): self
     {
         $accessToken = Str::random(32);
         $password = Str::random(8);
-    
+
         return self::create([
             'project_id' => $projectId,
             'access_token' => $accessToken,
