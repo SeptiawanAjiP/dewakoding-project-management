@@ -1,320 +1,58 @@
-# DewaKoding Project Management
-
-🎉 **Now using Filament 4!** 🎉
-
-![image](https://raw.githubusercontent.com/SeptiawanAjiP/dewakoding-project-management/refs/heads/main/images/image-1.png)
-![image](https://raw.githubusercontent.com/SeptiawanAjiP/dewakoding-project-management/refs/heads/main/images/image-1a.png)
-![image](https://raw.githubusercontent.com/SeptiawanAjiP/dewakoding-project-management/refs/heads/main/images/image-4.jpeg)
-![image](https://raw.githubusercontent.com/SeptiawanAjiP/dewakoding-project-management/refs/heads/main/images/image-5.jpeg)
-
-A Laravel Filament 4 application for managing projects with ticket management and status tracking.
-
-## Features
-
-- Project management with ticket prefix configuration
-- Role-based access control (using Filament Shield)
-- Team member management with role assignments
-- Customizable ticket statuses with color coding
-- Ticket management with assignees and due dates
-- Unique ticket identifiers
-- Epic management for organizing tickets into larger initiatives
-- Comment system for tickets to facilitate team discussions
-- Kanban board view for visualizing ticket progress
-- Assign ticket to multi users
-- User contributions chart
-- Timeline view
-- Export ticket data to CSV
-- Leaderboard for team member performance
-- External dashboard view (Client Portal)
-
-## Requirements
-
-- PHP > 8.2+
-- Laravel 12
-- Composer
-- Node.js & npm
-
-![image](https://raw.githubusercontent.com/SeptiawanAjiP/dewakoding-project-management/refs/heads/main/images/image-2.jpeg)
-![image](https://raw.githubusercontent.com/SeptiawanAjiP/dewakoding-project-management/refs/heads/main/images/image-6.jpeg)
-![image](https://raw.githubusercontent.com/SeptiawanAjiP/dewakoding-project-management/refs/heads/main/images/image-7.jpeg)
-![image](https://raw.githubusercontent.com/SeptiawanAjiP/dewakoding-project-management/refs/heads/main/images/image-8.jpeg)
-![image](https://raw.githubusercontent.com/SeptiawanAjiP/dewakoding-project-management/refs/heads/main/images/image-9.jpeg)
-
-
-## Installation
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/SeptiawanAjiP/dewakoding-project-management
-   cd dewakoding-project-management
-   ```
-
-2. Install dependencies:
-   ```bash
-   composer install
-   npm install
-   ```
-
-3. Set up environment:
-   ```bash
-   cp .env.example .env
-   php artisan key:generate
-   ```
-
-4. Configure database in `.env` file:
-   ```env
-   DB_CONNECTION=mysql
-   DB_HOST=127.0.0.1
-   DB_PORT=3306
-   DB_DATABASE=dewakoding_project_management
-   DB_USERNAME=root
-   DB_PASSWORD=
-   ```
+# Project Management System
 
-5. Run migrations:
-   ```bash
-   php artisan migrate
-   ```
+Aplikasi manajemen proyek untuk membantu tim mengelola proyek, tugas, tiket, dan kolaborasi anggota.
 
-6. Create storage link for file uploads:
-   ```bash
-   php artisan storage:link
-   ```
+Project ini dikembangkan untuk memenuhi tugas kelompok mata kuliah yang berkaitan dengan penggunaan Git dan GitHub, meliputi repository, commit, branch, dan Pull Request.
 
-7. Create a Filament admin user:
-   ```bash
-   php artisan make:filament-user
-   ```
+## 👥 Anggota Kelompok
 
-8. Activate Role & Permission:
-   ```bash
-   php artisan shield:setup
-   php artisan shield:install
-   php artisan shield:super-admin
-   ```
+| No. | Nama | NRP |
+|---|---|---|
+| 1 | M Afa Ubaid Tachtiar | 06.2022.1.07553 |
+| 2 | Fedora Asyiqi | 06.2022.1.07526 |
 
-9. Compile assets:
-   ```bash
-   npm run dev
-   ```
+## ✨ Fitur Aplikasi
 
-10. Start the development server:
-    ```bash
-    php artisan serve
-    ```
+- Manajemen proyek
+- Manajemen tugas dan tiket
+- Pengelolaan anggota tim
+- Status dan progres pekerjaan
+- Komentar dan kolaborasi
+- Tampilan Kanban untuk pengelolaan tugas
 
+## 🛠️ Teknologi
 
-## Usage
+- Laravel
+- PHP
+- Filament
+- Database sesuai konfigurasi project
 
-1. Access the Filament admin panel at `http://localhost:8000/admin`
-2. Log in with the Filament user credentials you created
-3. Create a new project with custom ticket prefix
-4. Add team members to the project
-5. Create and customize ticket statuses
-6. Add tickets and assign to team members
+## 🌿 Branch dan Kolaborasi
 
-## ⚠️ Upgrade from Filament 3 to Filament 4
+Repository ini menggunakan Git untuk mengelola perubahan kode dan kolaborasi antaranggota.
 
-**Important Notice**: This project has been upgraded to Filament 4. If you're upgrading from a previous version that used Filament 3, please follow these steps carefully:
+Branch yang digunakan:
 
-### Prerequisites
-1. **Backup your database** before starting the upgrade process
-2. Make sure you have the latest version of the codebase
+- `main` — branch utama
+- `feature/afa-ubaid` — branch pengembangan M Afa Ubaid Tachtiar
+- `feature/fedora-asyiqi` — branch pengembangan Fedora Asyiqi
 
-### Filament Shield Upgrade Steps
-The upgrade process for Filament Shield requires special attention. Please read the official upgrade guide first:
-**[Filament Shield Upgrade Guide](https://github.com/bezhanSalleh/filament-shield?tab=readme-ov-file#upgrade)**
+Setiap anggota melakukan perubahan dan commit pada branch masing-masing, kemudian mengajukan Pull Request menuju branch `main`.
 
-### Required Commands
-After updating your dependencies and following the official guide, run the following command to regenerate Shield policies and permissions:
+## 📋 Tujuan Tugas
 
-```bash
-php artisan shield:generate --all --option=policies
-```
+1. Membuat dan mengelola repository GitHub.
+2. Melakukan commit perubahan.
+3. Membuat branch untuk setiap anggota kelompok.
+4. Mengembangkan perubahan secara terpisah.
+5. Membuat Pull Request untuk menggabungkan perubahan.
 
-**Note**: Some upgrade steps related to filament-shield have already been implemented in the codebase. The command above will ensure all policies and permissions are properly generated for Filament 4 compatibility.
+## 📚 Referensi Project
 
-### Post-Upgrade Verification
-1. Clear all caches: `php artisan optimize:clear`
-2. Test your role-based permissions
-3. Verify that all resources, pages, and widgets are accessible
-4. Check that user roles and permissions are working correctly
+Project awal: [Obedd11/project-management](https://github.com/Obedd11/project-management)
 
+Pengembangan dilakukan dengan tetap memperhatikan lisensi dan atribusi kepada pembuat asli.
 
-## Main Features
+---
 
-### Board View
-
-The Board View offers a familiar kanban-style interface for ticket management:
-
-- Drag-and-drop tickets between status columns
-- Customize columns to match your team's process
-- Quick-edit functionality for updating tickets directly from the board
-
-### Timeline View
-
-The Timeline feature provides a chronological perspective of your project work:
-
-- Visualize project roadmap with start and end dates
-- Track milestone completion across time periods
-- Easily identify scheduling conflicts or resource bottlenecks
-
-### Epic Management
-
-Epics help organize related tickets into larger initiatives:
-
-- Group tickets by feature, release, or business objective
-- Track progress across multiple tickets
-- Set start and end dates for planning purposes
-- Visualize which tickets belong to which initiatives
-
-### Ticket Comments
-
-The comment system enhances team collaboration:
-
-- Team members can discuss tickets directly in the application
-- All comments are timestamped and attributed to users
-- Supports rich text formatting for improved readability
-- Enables better context sharing and decision documentation
-
-## Google Login Integration
-
-This application supports Google OAuth login. Here's how to configure it:
-
-### 1. Getting Google OAuth Credentials
-
-1. **Open Google Cloud Console**
-   - Visit [Google Cloud Console](https://console.cloud.google.com/)
-   - Sign in with your Google account
-
-2. **Create or Select a Project**
-   - Create a new project or select an existing one
-   - Make sure the project is active
-
-3. **Enable Google+ API**
-   - In the sidebar, select "APIs & Services" > "Library"
-   - Search for "Google+ API" and click "Enable"
-
-4. **Create OAuth 2.0 Credentials**
-   - In the sidebar, select "APIs & Services" > "Credentials"
-   - Click "Create Credentials" > "OAuth 2.0 Client IDs"
-   - Select "Web application" as the application type
-   - Enter application name (example: "DewaKoding Project Management")
-   - In "Authorized redirect URIs", add:
-     ```
-     http://localhost:8000/auth/google/callback
-     https://yourdomain.com/auth/google/callback
-     ```
-   - Click "Create"
-
-5. **Copy Client ID and Client Secret**
-   - After creation, you will get Client ID and Client Secret
-   - Copy both values for application configuration
-
-### 2. Environment Configuration
-
-Add Google OAuth configuration in `.env` file:
-
-```env
-GOOGLE_CLIENT_ID=your_google_client_id_here
-GOOGLE_CLIENT_SECRET=your_google_client_secret_here
-```
-
-Replace `your_google_client_id_here` and `your_google_client_secret_here` with the values you obtained from Google Cloud Console.
-
-### 3. How to Use
-
-1. Open the application login page at `/admin/login`
-2. Click the "Continue with Google" button
-3. Sign in with your Google account
-4. The application will automatically create a new account or log in to an existing account
-
-**Note:** If the Google email is already registered in the system, the application will link the Google account with the existing account.
-
-## Queue & Email Notifications
-
-This application uses a queue system to send email notifications asynchronously. Here's how to configure and run it:
-
-### 1. Email Configuration
-
-Configure email in `.env` file:
-
-```env
-# For development (log emails to file)
-MAIL_MAILER=log
-
-# For production (SMTP)
-MAIL_MAILER=smtp
-MAIL_HOST=smtp.gmail.com
-MAIL_PORT=587
-MAIL_USERNAME=your-email@gmail.com
-MAIL_PASSWORD=your-app-password
-MAIL_ENCRYPTION=tls
-MAIL_FROM_ADDRESS=your-email@gmail.com
-MAIL_FROM_NAME="DewaKoding Project Management"
-```
-
-### 2. Queue Configuration
-
-Ensure queue configuration in `.env`:
-
-```env
-QUEUE_CONNECTION=database
-```
-
-### 3. Running Queue Worker
-
-To process email notification queues, run the following commands:
-
-#### Development Mode
-```bash
-php artisan queue:work
-```
-
-#### Production Mode (with automatic restart)
-```bash
-php artisan queue:work --daemon --tries=3 --timeout=60
-```
-
-#### Using Supervisor (Recommended for Production)
-
-1. Install supervisor:
-   ```bash
-   sudo apt-get install supervisor
-   ```
-
-2. Create configuration file `/etc/supervisor/conf.d/laravel-worker.conf`:
-   ```ini
-   [program:laravel-worker]
-   process_name=%(program_name)s_%(process_num)02d
-   command=php /path/to/your/project/artisan queue:work --sleep=3 --tries=3 --max-time=3600
-   autostart=true
-   autorestart=true
-   stopasgroup=true
-   killasgroup=true
-   user=www-data
-   numprocs=8
-   redirect_stderr=true
-   stdout_logfile=/path/to/your/project/storage/logs/worker.log
-   stopwaitsecs=3600
-   ```
-
-3. Restart supervisor:
-   ```bash
-   sudo supervisorctl reread
-   sudo supervisorctl update
-   sudo supervisorctl start laravel-worker:*
-   ```
-
-### 4. Email Notification Types
-
-The application sends email notifications for:
-- **Project Assignment**: When a user is added to a project
-- **Comment Notifications**: When there are new comments on tickets
-- **Ticket Updates**: When ticket status changes
-
-**Note:** Make sure the queue worker is always running to process email notifications. Without the queue worker, emails will not be sent.
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
+**Project Kelompok — Git & GitHub**
